@@ -1,16 +1,16 @@
 #include <stdio.h>
-#include "erastotenes.h"
+#include "lista.h"
 
 int main(){
     int N;
 
     scanf("%d", &N);
 
-    Erastotenes* lista = numerosPrimos(N);
+    Lista* lista = crivoDeEratostenes(N);
 
-    printaPrimos(lista);
+    printaLista(lista);
 
-    freeErastotenes(lista);
+    liberaLista(lista);
 
     return 0;
 }
