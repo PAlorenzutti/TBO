@@ -24,10 +24,15 @@ int main(){
         int *pessoa_removida = vector_remove(pessoas, index_atual);
 
         printf("Pessoa %d foi removida da roda\n", *pessoa_removida + 1);
+
+        free(pessoa_removida);
     }
 
     int *lider = vector_pop_back(pessoas);
     printf("Pessoa %d é a líder\n", *lider + 1);
+    free(lider);
+
+    vector_destroy(pessoas);
 
     return 0;
 }
