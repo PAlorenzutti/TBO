@@ -2,6 +2,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 void print_itens(Item *itens, int N){
     for(int i = 0; i < N; i++){
@@ -44,9 +45,17 @@ int main(int argc, char *argv[]){
 
     leitura_arquivo(itens, atoi(argv[1]), argv[2]);
 
+    clock_t begin = clock();
+
     sort(itens, 0, atoi(argv[1]));
 
+    clock_t end = clock();
+
+    double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
+
     print_itens(itens, atoi(argv[1]));
+
+    printf("%lf", time_spent);
 
     free(itens);
 }
