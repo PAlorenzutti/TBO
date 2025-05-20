@@ -30,12 +30,20 @@ void leitura_arquivo(Item *itens, int N, char *path){
 //bubble sort
 extern void sort(Item *a, int lo, int hi){
     for(int i = 0; i < hi; i++){
+        int swap = 0;
+        
         for(int j = i + 1; j < hi; j++){
             if(a[i] > a[j]){
                 Item temp = a[i];
                 a[i] = a[j];
                 a[j] = temp;
+
+                swap = 1;
             }
+        }
+
+        if(!swap){
+            break;
         }
     }
 }
