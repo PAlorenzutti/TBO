@@ -33,10 +33,8 @@ extern void bubble_sort(Item *a, int lo, int hi){
         int swap = 0;
         
         for(int j = i + 1; j < hi; j++){
-            if(a[i] > a[j]){
-                Item temp = a[i];
-                a[i] = a[j];
-                a[j] = temp;
+            if(less(a[j], a[i])){
+                exch(a[j], a[i]);
 
                 swap = 1;
             }
@@ -51,18 +49,16 @@ extern void bubble_sort(Item *a, int lo, int hi){
 //selection sort
 extern void selection_sort(Item *a, int lo, int hi){
     for(int i = 0; i < hi; i++){
-        int k = i;
+        int menor = i;
         
         for(int j = i + 1; j < hi; j++){
-            if(a[j] < a[k]){
-                k = j;
+            if(less(a[j], a[menor])){
+                menor = j;
             }
         }
 
-        if(a[k] != a[i]){
-            Item temp = a[i];
-            a[i] = a[k];
-            a[k] = temp;
+        if(a[menor] != a[i]){
+            exch(a[menor], a[i]);
         }
     }
 }
