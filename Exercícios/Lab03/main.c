@@ -1,0 +1,52 @@
+#include "item.h"
+
+#include <stdio.h>
+#include <stdlib.h>
+
+void print_itens(Item *itens, int N){
+    for(int i = 0; i < N; i++){
+        printf("%d\n", (int)itens[i]);
+    }
+}
+
+void leitura_arquivo(Item *itens, int N, char *path){
+    FILE *file = fopen(path, "r");
+
+    char *linha = NULL;
+    size_t tamanho = 0;
+
+    for(int i = 0; i < N; i++){
+        getline(&linha, &tamanho, file);
+
+        itens[i] = atoi(linha);
+    }
+
+    free(linha);
+
+    fclose(file);
+}
+
+//bubble sort
+extern void sort(Item *a, int lo, int hi){
+    for(int i = 0; i < hi; i++){
+        for(int j = i + 1; j < hi; j++){
+            if(a[i] > a[j]){
+                Item temp = a[i];
+                a[i] = a[j];
+                a[j] = temp;
+            }
+        }
+    }
+}
+
+int main(int argc, char *argv[]){
+    Item *itens = (Item*)calloc(atoi(argv[1]), sizeof(Item));
+
+    leitura_arquivo(itens, atoi(argv[1]), argv[2]);
+
+    sort(itens, 0, atoi(argv[1]));
+
+    print_itens(itens, atoi(argv[1]));
+
+    free(itens);
+}
