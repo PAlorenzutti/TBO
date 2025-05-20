@@ -28,7 +28,7 @@ void leitura_arquivo(Item *itens, int N, char *path){
 }
 
 //bubble sort
-extern void sort(Item *a, int lo, int hi){
+extern void bubble_sort(Item *a, int lo, int hi){
     for(int i = 0; i < hi; i++){
         int swap = 0;
         
@@ -48,6 +48,25 @@ extern void sort(Item *a, int lo, int hi){
     }
 }
 
+//selection sort
+extern void selection_sort(Item *a, int lo, int hi){
+    for(int i = 0; i < hi; i++){
+        int k = i;
+        
+        for(int j = i + 1; j < hi; j++){
+            if(a[j] < a[k]){
+                k = j;
+            }
+        }
+
+        if(a[k] != a[i]){
+            Item temp = a[i];
+            a[i] = a[k];
+            a[k] = temp;
+        }
+    }
+}
+
 int main(int argc, char *argv[]){
     Item *itens = (Item*)calloc(atoi(argv[1]), sizeof(Item));
 
@@ -55,7 +74,7 @@ int main(int argc, char *argv[]){
 
     clock_t begin = clock();
 
-    sort(itens, 0, atoi(argv[1]));
+    selection_sort(itens, 0, atoi(argv[1]));
 
     clock_t end = clock();
 
