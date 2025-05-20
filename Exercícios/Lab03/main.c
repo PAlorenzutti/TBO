@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <stdbool.h>
 
 void print_itens(Item *itens, int N){
     for(int i = 0; i < N; i++){
@@ -30,13 +31,13 @@ void leitura_arquivo(Item *itens, int N, char *path){
 //bubble sort
 extern void bubble_sort(Item *a, int lo, int hi){
     for(int i = 0; i < hi; i++){
-        int swap = 0;
+        bool swap = false;
         
         for(int j = i + 1; j < hi; j++){
             if(less(a[j], a[i])){
                 exch(a[j], a[i]);
 
-                swap = 1;
+                swap = true;
             }
         }
 
@@ -63,6 +64,42 @@ extern void selection_sort(Item *a, int lo, int hi){
     }
 }
 
+//insertion sort
+extern void insertion_sort(Item *a, int lo, int hi) {
+    for (int i = lo + 1; i < hi; i++) {
+        for (int k = i; k > lo && less(a[k], a[k - 1]); k--) {
+            exch(a[k], a[k - 1]);  // Função de troca definida em item.h
+        }
+    }
+}
+
+//shaker sort
+extern void shaker_sort(Item *a, int lo, int hi){
+    for(int i = 0; i < hi/2; i++){
+        bool swap = false;
+
+        for(int j = i; j < hi - i - 1; j++){
+            if(less(a[j + 1], a[j])){
+                exch(a[j], a[j + 1]);
+            }
+
+            swap = true;
+        }
+
+        for(int j = hi - i - 2; j > i; j--){
+            if(less(a[j], a[j - 1])){
+                exch(a[j], a[j - 1]);
+            }
+
+            swap = true;
+        }
+
+        if(!swap){
+            break;
+        }
+    }
+}
+
 int main(int argc, char *argv[]){
     Item *itens = (Item*)calloc(atoi(argv[1]), sizeof(Item));
 
@@ -70,7 +107,7 @@ int main(int argc, char *argv[]){
 
     clock_t begin = clock();
 
-    selection_sort(itens, 0, atoi(argv[1]));
+    shaker_sort(itens, 0, atoi(argv[1]));
 
     clock_t end = clock();
 
@@ -78,7 +115,7 @@ int main(int argc, char *argv[]){
 
     print_itens(itens, atoi(argv[1]));
 
-    printf("%lf", time_spent);
+    printf("Tempo de execução: %lf\n", time_spent);
 
     free(itens);
 }
