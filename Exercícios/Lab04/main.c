@@ -233,7 +233,7 @@ void merge(Item *a, Item *aux, int lo, int mid, int hi){
 //     merge(a, aux, lo, mid, hi);
 // }
 
-/// @brief merge_sort bottom up
+/// @brief merge_sort bottom up com merge skip
 /// @param a 
 /// @param aux 
 /// @param lo 
@@ -250,6 +250,11 @@ void merge_sort(Item *a, int lo, int hi){
     for(int sz  = 1; sz < N; sz = SZ2){
         for(int lo = 0; lo < N - sz; lo += SZ2){
             int x = lo + SZ2 - 1;
+            
+            if(!less(a[lo + sz], a[lo + sz - 1])){
+                break;
+            }    
+            
             merge(a, aux, lo, lo + sz - 1, MIN(x, y));
         }
     }
