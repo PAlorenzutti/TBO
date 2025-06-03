@@ -129,10 +129,38 @@ void merge(Item *a, Item *aux, int lo, int mid, int hi){
         }
     }
 }
+// /// @brief merge_sort normal
+// /// @param a 
+// /// @param aux 
+// /// @param lo 
+// /// @param hi 
+// void merge_sort(Item *a, Item *aux, int lo, int hi){
+//     //significa que o array possui apenas um elemento;
+//     if(hi <= lo){
+//         return;
+//     }
 
+//     int mid = lo + (hi - lo) / 2;
+
+//     //sort com a primeira metade do vetor;
+//     merge_sort(a, aux, lo, mid);
+
+//     //sort com a segunda metade do vetor;
+//     merge_sort(a, aux, mid + 1, hi);
+
+//     //merge com as duas partes que já estão ordenadas;
+//     merge(a, aux, lo, mid, hi);
+// }
+
+/// @brief merge_sort com cutoff
+/// @param a 
+/// @param aux 
+/// @param lo 
+/// @param hi 
 void merge_sort(Item *a, Item *aux, int lo, int hi){
     //significa que o array possui apenas um elemento;
-    if(hi <= lo){
+    if(hi <= lo + CUTOFF - 1){
+        insertion_sort(a, lo, hi);
         return;
     }
 

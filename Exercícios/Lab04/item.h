@@ -1,6 +1,8 @@
 #ifndef _ITEM_H_
 #define _ITEM_H_
 
+#define CUTOFF 5
+
 typedef int Item;
 
 #define key(A) (A)
