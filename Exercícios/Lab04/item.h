@@ -10,4 +10,7 @@ typedef int Item;
 #define exch(A, B) { Item t = A; A = B; B = t; }
 #define compexch(A, B) if (less(B, A)) exch(A, B)
 
+#define SZ2 (sz+sz)
+#define MIN(X, Y) ((X < Y) ? (X) : (Y))
+
 #endif 

@@ -176,47 +176,101 @@ void merge(Item *a, Item *aux, int lo, int mid, int hi){
 //     merge(a, aux, lo, mid, hi);
 // }
 
-/// @brief merge_sort com merge skip (sem cutoff)
+// /// @brief merge_sort com merge skip (sem cutoff)
+// /// @param a 
+// /// @param aux 
+// /// @param lo 
+// /// @param hi 
+// void merge_sort(Item *a, Item *aux, int lo, int hi){
+//     //significa que o array possui apenas um elemento;
+//     if(hi <= lo){
+//         return;
+//     }
+
+//     int mid = lo + (hi - lo) / 2;
+
+//     //sort com a primeira metade do vetor;
+//     mergee_sort(a, aux, lo, mid);
+
+//     //sort com a segunda metade do vetor;
+//     merge_sort(a, aux, mid + 1, hi);
+
+//     //se ao comparar o primeiro da segunda parte com o último da primeira parte, com os dois vetores já ordenadas, o último for menor do que o primeiro, então já está ordenado
+//     if(!less(a[mid+1], a[mid])){
+//         return;
+//     }
+
+//     //merge com as duas partes que já estão ordenadas;
+//     merge(a, aux, lo, mid, hi);
+// }
+
+// /// @brief merge_sort com merge skip (com cutoff)
+// /// @param a 
+// /// @param aux 
+// /// @param lo 
+// /// @param hi 
+// void merge_sort(Item *a, Item *aux, int lo, int hi){
+//     //significa que o array possui apenas o número de elementos do cutoff;
+//     if(hi <= lo + CUTOFF - 1){
+//         insertion_sort(a, lo, hi);
+//         return;
+//     }
+
+//     int mid = lo + (hi - lo) / 2;
+
+//     //sort com a primeira metade do vetor;
+//     merge_sort(a, aux, lo, mid);
+
+//     //sort com a segunda metade do vetor;
+//     merge_sort(a, aux, mid + 1, hi);
+
+//     //se ao comparar o primeiro da segunda parte com o último da primeira parte, com os dois vetores já ordenadas, o último for menor do que o primeiro, então já está ordenado
+//     if(!less(a[mid+1], a[mid])){
+//         return;
+//     }
+
+//     //merge com as duas partes que já estão ordenadas;
+//     merge(a, aux, lo, mid, hi);
+// }
+
+/// @brief merge_sort bottom up
 /// @param a 
 /// @param aux 
 /// @param lo 
 /// @param hi 
-void merge_sort(Item *a, Item *aux, int lo, int hi){
-    //significa que o array possui apenas um elemento;
-    if(hi <= lo){
-        return;
+void merge_sort(Item *a, int lo, int hi){
+    //pega o tamanho do vetor;
+    int N = (hi - lo) + 1;
+
+    //pega o final do vetor;
+    int y = N - 1;
+
+    Item *aux = malloc(N * sizeof(Item));
+
+    for(int sz  = 1; sz < N; sz = SZ2){
+        for(int lo = 0; lo < N - sz; lo += SZ2){
+            int x = lo + SZ2 - 1;
+            merge(a, aux, lo, lo + sz - 1, MIN(x, y));
+        }
     }
-
-    int mid = lo + (hi - lo) / 2;
-
-    //sort com a primeira metade do vetor;
-    merge_sort(a, aux, lo, mid);
-
-    //sort com a segunda metade do vetor;
-    merge_sort(a, aux, mid + 1, hi);
-
-    //se ao comparar o primeiro da segunda parte com o último da primeira parte, com os dois vetores já ordenadas, o último for menor do que o primeiro, então já está ordenado
-    if(!less(a[mid+1], a[mid])){
-        return;
-    }
-
-    //merge com as duas partes que já estão ordenadas;
-    merge(a, aux, lo, mid, hi);
-}
-
-/// @brief sort genérico para merge sort
-/// @param a vetor de itens (inteiros)
-/// @param lo chão do vetor
-/// @param hi teto do vetor
-void sort(Item *a, int lo, int hi){
-    int n = (hi - lo) + 1; //pega o tamanho do vetor (ex: vetor de 8 itens, 0-7, 7-0+1=8);
-
-    Item *aux = malloc(n * sizeof(Item));
-
-    merge_sort(a, aux, lo, hi);
 
     free(aux);
 }
+
+
+// /// @brief sort genérico para merge sort
+// /// @param a vetor de itens (inteiros)
+// /// @param lo chão do vetor
+// /// @param hi teto do vetor
+// void sort(Item *a, int lo, int hi){
+//     int n = (hi - lo) + 1; //pega o tamanho do vetor (ex: vetor de 8 itens, 0-7, 7-0+1=8);
+
+//     Item *aux = malloc(n * sizeof(Item));
+
+//     merge_sort(a, aux, lo, hi);
+
+//     free(aux);
+// }
 
 int main(int argc, char *argv[]){
     Item *itens = (Item*)calloc(atoi(argv[1]), sizeof(Item));
@@ -225,7 +279,7 @@ int main(int argc, char *argv[]){
 
     clock_t begin = clock();
 
-    sort(itens, 0, atoi(argv[1]));
+    merge_sort(itens, 0, atoi(argv[1]));
 
     clock_t end = clock();
 
