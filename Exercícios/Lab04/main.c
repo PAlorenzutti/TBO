@@ -233,7 +233,7 @@ void merge(Item *a, Item *aux, int lo, int mid, int hi){
 //     merge(a, aux, lo, mid, hi);
 // }
 
-/// @brief merge_sort bottom up com merge skip
+/// @brief merge_sort bottom up com merge skip e cutoff
 /// @param a 
 /// @param aux 
 /// @param lo 
@@ -251,10 +251,17 @@ void merge_sort(Item *a, int lo, int hi){
         for(int lo = 0; lo < N - sz; lo += SZ2){
             int x = lo + SZ2 - 1;
             
+            //merge skip
             if(!less(a[lo + sz], a[lo + sz - 1])){
                 break;
-            }    
+            }
             
+            //merge cutoff
+            if(MIN(x, y) <= lo + CUTOFF - 1){
+                insertion_sort(a, lo, MIN(x, y));
+                break;
+            }
+
             merge(a, aux, lo, lo + sz - 1, MIN(x, y));
         }
     }
