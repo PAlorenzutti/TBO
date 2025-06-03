@@ -152,15 +152,38 @@ void merge(Item *a, Item *aux, int lo, int mid, int hi){
 //     merge(a, aux, lo, mid, hi);
 // }
 
-/// @brief merge_sort com cutoff
+// /// @brief merge_sort com cutoff
+// /// @param a 
+// /// @param aux 
+// /// @param lo 
+// /// @param hi 
+// void merge_sort(Item *a, Item *aux, int lo, int hi){
+//     //significa que o array possui apenas o número de elementos limite para fazer o insertion sort;
+//     if(hi <= lo + CUTOFF - 1){
+//         insertion_sort(a, lo, hi);
+//         return;
+//     }
+
+//     int mid = lo + (hi - lo) / 2;
+
+//     //sort com a primeira metade do vetor;
+//     merge_sort(a, aux, lo, mid);
+
+//     //sort com a segunda metade do vetor;
+//     merge_sort(a, aux, mid + 1, hi);
+
+//     //merge com as duas partes que já estão ordenadas;
+//     merge(a, aux, lo, mid, hi);
+// }
+
+/// @brief merge_sort com merge skip (sem cutoff)
 /// @param a 
 /// @param aux 
 /// @param lo 
 /// @param hi 
 void merge_sort(Item *a, Item *aux, int lo, int hi){
     //significa que o array possui apenas um elemento;
-    if(hi <= lo + CUTOFF - 1){
-        insertion_sort(a, lo, hi);
+    if(hi <= lo){
         return;
     }
 
@@ -171,6 +194,11 @@ void merge_sort(Item *a, Item *aux, int lo, int hi){
 
     //sort com a segunda metade do vetor;
     merge_sort(a, aux, mid + 1, hi);
+
+    //se ao comparar o primeiro da segunda parte com o último da primeira parte, com os dois vetores já ordenadas, o último for menor do que o primeiro, então já está ordenado
+    if(!less(a[mid+1], a[mid])){
+        return;
+    }
 
     //merge com as duas partes que já estão ordenadas;
     merge(a, aux, lo, mid, hi);
