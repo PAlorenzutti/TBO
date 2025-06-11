@@ -1,0 +1,8 @@
+in
+saida.txt
+*.o
+main
+README.md
+*.json
+*.txt
+trab1
