@@ -3,7 +3,7 @@
 #include "colsys.h"
 
 #define MAX_SIM_TIME 10000
-#define GUI 0               // Modifique para 0 se não quiser a janela.
+#define GUI 1           // Modifique para 0 se não quiser a janela.
 
 int main(int argc, char* argv[]) {
     system_init(atoi(argv[1]), MAX_SIM_TIME, GUI);

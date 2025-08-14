@@ -19,7 +19,7 @@
 
 // TODO: Crie a struct pq.
 struct pq{
-    Event **elements;
+    Event **events;
     int size;
     int allocated;
 };
@@ -32,8 +32,11 @@ PQ* PQ_create(int max_N) {
     //       de eventos informados no parâmetro.
     PQ *pq = (PQ*)malloc(sizeof(PQ));
 
-    pq->elements = (Event**)malloc(sizeof(Event*) * max_N + 1);
     pq->allocated = max_N + 1;
+    pq->events = (Event**)malloc(sizeof(Event*) * pq->allocated);
+    for (int i = 0; i < pq->allocated; i++) {
+        pq->events[i] = NULL;
+    }
     pq->size = 0;
 
     return pq;
@@ -45,34 +48,22 @@ PQ* PQ_create(int max_N) {
 void PQ_destroy(PQ *pq) {
     // TODO: Implemente essa função que libera toda a memória da fila,
     //       destruindo inclusive os eventos que estavam na fila.
-    if(pq->size >= 0){
-        for(int i = 1; i <= pq->size; i++){
-            destroy_event(pq->elements[i]);
-        }
+    for(int i = 1; i <= pq->size; i++){
+        destroy_event(pq->events[i]);
     }
 
-    free(pq->elements);
-
+    free(pq->events);
     free(pq);
 }
 
-void PQ_swap_elements(PQ *pq, int i, int j){
-    //troca os dois elementos;
-    Event *temp = pq->elements[i];
-    pq->elements[i] = pq->elements[j];
-    pq->elements[j] = temp;
-}
 
-void PQ_fix_up(PQ *pq){
-    int k = pq->size;
-    
-    //enquanto o tamanho for maior do que 1;
-    //enquanto o pai for maior do que o filho;
-    while(k > 1 && get_time(pq->elements[k]) < get_time(pq->elements[k/2])){
-        //se o filho for menor do que o pai, troca os dois;
-        PQ_swap_elements(pq, k, k/2);
+#define greater(A, B)   (compare(A, B) > 0)
+#define exch(A, B)      { Event *t = A; A = B; B = t; }
 
-        //troca o índice pro índice do novo pai (o que era menor antes);
+static void PQ_fix_up(PQ *pq, int k) {
+    Event **a = pq->events;
+    while (k > 1 && greater(a[k/2], a[k])) {
+        exch(a[k], a[k/2]);
         k = k/2;
     }
 }
@@ -88,26 +79,24 @@ void PQ_insert(PQ *pq, Event *e) {
     //       dores de cabeça com acessos inválidos na memória.
 
     //insere elemento ao final do vetor;
-    pq->elements[++pq->size] = e;
+    //incrementa pq->size antes de inserir, pois, por exemplo, pq->size começa com 0;
+    pq->events[++pq->size] = e;
 
-    //conserta do último para cima;
-    PQ_fix_up(pq);
+    //conserta do último para cima, no caso a partir de pq->size;
+    PQ_fix_up(pq, pq->size);
 }
 
-void PQ_fix_down(PQ *pq, int k){
-    while(2 * k <= pq->size){
+static void PQ_fix_down(PQ *pq, int k) {
+    Event **a = pq->events;
+    while (2 * k <= pq->size) {
         int j = 2 * k;
-
-        if(j < pq->size && get_time(pq->elements[j + 1]) < get_time(pq->elements[j])){
+        if (j < pq->size && greater(a[j], a[j+1])) {
             j++;
         }
-
-        if(get_time(pq->elements[k]) < get_time(pq->elements[j])){
+        if (!greater(a[k], a[j])) {
             break;
         }
-
-        PQ_swap_elements(pq, k, j);
-
+        exch(a[k], a[j]);
         k = j;
     }
 }
@@ -120,16 +109,16 @@ Event* PQ_delmin(PQ *pq) {
     //       fila e o retorna.
 
     //pega o menor evento de todos;
-    Event *min = pq->elements[0];
+    Event *min = pq->events[1];
 
-    //troca o menor elemento com o último do array;
-    PQ_swap_elements(pq, 0, pq->size - 1);
+    //troca o menor elemento com o último do array usando a macro exch;
+    exch(pq->events[1], pq->events[pq->size]);
 
     //diminui o tamanho do vetor;
     pq->size--;
 
     //fix_down a partir do primeiro elemento do vetor;
-    PQ_fix_down(pq, 0);
+    PQ_fix_down(pq, 1);
 
     return min;
 }
@@ -147,4 +136,5 @@ bool PQ_is_empty(PQ *pq) {
  */
 int PQ_size(PQ *pq) {
     // TODO: Implemente essa função.
+    return pq->size;
 }
