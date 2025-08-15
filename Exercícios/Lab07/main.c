@@ -162,8 +162,6 @@ int main(int argc, char *argv[])
     // Ordena os sufixos usando radix sort otimizado;
     radix_sort_suffixes((Suffix **)vector_data(suffixes), N);
 
-    vector_print(suffixes, suffix_print);
-
     search_loop(arquivo, suffixes, N, context);
 
     // Libera memória dos sufixos
