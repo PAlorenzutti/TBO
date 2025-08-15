@@ -1,7 +1,7 @@
-all: compila
+all: compile
 
-compila:
-	gcc *.c -o main
+compile:
+	gcc *.c -o main 
 
 teste:
 	./main <teste.txt >saida.txt
@@ -10,5 +10,5 @@ valgrind:
 	valgrind ./main <teste.txt
 
 clean:
-	rm -rf main *.o
+	rm -rf *.o main
 	clear

@@ -77,7 +77,7 @@ void binary_tree_add(BinaryTree *bt, void *key, void *val){
 }
 
 void treenode_destroy(Node *node, KeyDestroyFn key_destroy_fn, ValDestroyFn val_destroy_fn){
-    if(node->key == node->val){
+    if(key_destroy_fn == val_destroy_fn){
         key_destroy_fn(node->key);
     }else{
         key_destroy_fn(node->key);
@@ -294,7 +294,7 @@ Vector *binary_tree_levelorder_traversal(BinaryTree *bt) {
 
     queue_enqueue(queue, bt->root);
 
-    while (vector_size(queue) > 0) {
+    while (!queue_empty(queue)) {
         Node *current = queue_dequeue(queue); 
 
         vector_push_back(output, current->key);
