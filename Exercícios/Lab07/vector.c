@@ -98,6 +98,11 @@ void vector_print(Vector *v, data_print print_fn)
   }
 }
 
+data_type *vector_data(Vector *v)
+{
+  return v->data;
+}
+
 void vector_destroy(void *value)
 {
   Vector *v = (Vector *)value;

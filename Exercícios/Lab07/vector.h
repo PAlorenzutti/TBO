@@ -32,6 +32,9 @@ int vector_binary_search(Vector *v, data_type val, cmp_fn cmp_fn);
 // Printa todos elementos do vetor (depuração)
 void vector_print(Vector *v, data_print print_fn);
 
+// Retorna o ponteiro para o array interno de dados do vector
+data_type *vector_data(Vector *v);
+
 // Libera o espaço reservado para o vector.
 void vector_destroy(void *value);
 

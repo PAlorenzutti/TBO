@@ -6,6 +6,7 @@
 #include "str.h"
 #include "suffix.h"
 #include "vector.h"
+#include "radix.h"
 
 void search_loop(String *arquivo, Vector *suffixes, int N, int context)
 {
@@ -158,8 +159,10 @@ int main(int argc, char *argv[])
         vector_insert(suffixes, suf);
     }
 
-    // Ordena os sufixos pelo vector_sort, usando qsort;
-    vector_sort(suffixes, suffix_compare);
+    // Ordena os sufixos usando radix sort otimizado;
+    radix_sort_suffixes((Suffix **)vector_data(suffixes), N);
+
+    vector_print(suffixes, suffix_print);
 
     search_loop(arquivo, suffixes, N, context);
 
