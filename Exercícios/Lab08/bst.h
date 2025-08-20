@@ -18,6 +18,12 @@ BinaryTree *bt_init(key_destroy_fn key_destroy_fn, val_destroy_fn val_destroy_fn
 
 void bt_put(BinaryTree *bt, void *key, void *val);
 
+int bt_rank(BinaryTree*bt, Key key);
+
+Node *bt_floor(BinaryTree *bt, Key key);
+
+Node *bt_ceiling(BinaryTree *bt, Key key);
+
 void bt_delete(BinaryTree *bt, Key key);
 
 void bt_delmin(BinaryTree *bt);
@@ -26,9 +32,15 @@ void bt_delmax(BinaryTree *bt);
 
 int bt_height(BinaryTree *bt);
 
+int bt_size(BinaryTree *bt);
+
 void bt_destroy(BinaryTree *bt);
 
 void bt_print(BinaryTree *bt, print_fn print_fn);
+
+Key bt_node_get_key(Node *n);
+
+Value bt_node_get_val(Node *n);
 
 Vector *bt_inorder_rec(BinaryTree *bt);
 
