@@ -99,10 +99,8 @@ int main() {
 
     printf("\nTeste concluído com sucesso!\n");
 
-    // Teste do heap_select
     printf("\n--- Teste do Heap Select ---\n");
-    Vector *vec_select = vector_init(destroy_int, 1);
-    vector_push_back(vec_select, NULL); // Dummy element for 1-indexing
+    Heap *pq_select = PQ_create(destroy_int, compare_ints);
 
     int select_values[] = {9, 5, 2, 7, 3, 8, 1, 6, 4};
     int num_select = sizeof(select_values) / sizeof(select_values[0]);
@@ -111,26 +109,24 @@ int main() {
     for(int i = 0; i < num_select; i++) {
         int *p_val = malloc(sizeof(int));
         *p_val = select_values[i];
-        vector_push_back(vec_select, p_val);
+        PQ_insert(pq_select, p_val);
         print_int(p_val);
         if (i < num_select - 1) printf(", ");
     }
     printf("\n");
+    
+    printf("Heap antes do heap_select:\n");
+    PQ_print(pq_select, print_int);
 
     int k = 4;
     printf("Executando heap_select para encontrar os %d menores elementos...\n", k);
-    heap_select(vec_select, k, compare_ints);
+    heap_select(pq_select, k);
 
-    printf("Vetor após heap_select (os %d primeiros devem ser os menores):\n", k);
-    // Imprime o vetor inteiro para ver o resultado
-    printf("[");
-    for (int i = 1; i <= num_select; i++) {
-        print_int(vector_get(vec_select, i));
-        if (i < num_select) printf(", ");
-    }
-    printf("]\n");
+    printf("Vetor interno do heap após heap_select (os %d primeiros devem ser os menores):\n", k);
+    // Imprime o vetor interno para ver o resultado
+    PQ_print(pq_select, print_int);
 
-    vector_destroy(vec_select);
+    PQ_destroy(pq_select);
     printf("--- Fim do Teste do Heap Select ---\n");
 
 

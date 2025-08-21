@@ -51,8 +51,7 @@ void PQ_insert(Heap *pq, void *data) {
     PQ_fix_up(pq, vector_size(pq->v) - 1);
 }
 
-static void PQ_fix_down(Heap *pq, int k) {
-    int size = vector_size(pq->v) - 1;
+static void PQ_fix_down(Heap *pq, int size, int k) {
     while (2 * k <= size) {
         int j = 2 * k;
         if (j < size && vector_compare(pq->v, j, j + 1, pq->cmp_fn) > 0) {
@@ -70,22 +69,25 @@ static void PQ_fix_down(Heap *pq, int k) {
  * Remove e retorna o menor elemento.
  */
 void* PQ_delmin(Heap *pq) {
-    if (PQ_is_empty(pq)) {
+    if(PQ_is_empty(pq)){
         return NULL;
     }
-    void *min = vector_get(pq->v, 1);
-    int last_idx = vector_size(pq->v) - 1;
-    vector_swap(pq->v, 1, last_idx);
-    void* old_last = vector_pop_back(pq->v);
-    // O dado removido pelo pop_back não deve ser destruído, pois é o 'min' que será retornado.
-    // A função vector_destroy do vector não será chamada para este elemento.
-    // No entanto, a implementação de vector_pop_back não destroi o dado, apenas o retorna.
-    // E vector_destroy itera sobre os elementos restantes.
-    // O elemento retornado por vector_get não é uma cópia, é o ponteiro.
-    // O dado em 'min' e 'old_last' é o mesmo.
-    (void)old_last;
 
-    PQ_fix_down(pq, 1);
+    // Guarda o mínimo (raiz)
+    void *min = vector_get(pq->v, 1);
+
+    // Índice do último elemento válido (desconsiderando o dummy)
+    int last_idx = vector_size(pq->v) - 1;
+
+    // Coloca o último elemento na raiz
+    vector_swap(pq->v, 1, last_idx);
+
+    // Remove o antigo último elemento (que era o mínimo)
+    (void)vector_pop_back(pq->v);
+
+    // Restaura a propriedade de heap a partir da raiz com o novo tamanho
+    int new_size = vector_size(pq->v) - 1; // tamanho do heap (sem o dummy)
+    PQ_fix_down(pq, new_size, 1);
 
     return min;
 }
@@ -119,29 +121,6 @@ void PQ_print(Heap *pq, data_print print_fn) {
     printf("]\n");
 }
 
-// Funções auxiliares para o heap_select que operam diretamente no Vector
-static void _fix_up(Vector *v, int k, cmp_fn cmp) {
-    while (k > 1 && cmp(vector_get(v, k/2), vector_get(v, k)) > 0) {
-        vector_swap(v, k, k/2);
-        k = k/2;
-    }
-}
-
-static void _fix_down(Vector *v, int size, int k, cmp_fn cmp) {
-    while (2 * k <= size) {
-        int j = 2 * k;
-        if (j < size && cmp(vector_get(v, j), vector_get(v, j + 1)) > 0) {
-            j++;
-        }
-        if (cmp(vector_get(v, k), vector_get(v, j)) <= 0) {
-            break;
-        }
-        vector_swap(v, k, j);
-        k = j;
-    }
-}
-
-
 /*
  * Usa o heap para ordenar parcialmente o vetor v, colocando os k menores
  * elementos nas k primeiras posições.
@@ -149,8 +128,8 @@ static void _fix_down(Vector *v, int size, int k, cmp_fn cmp) {
  * Se o seu vetor for 0-indexado, você precisará de um wrapper ou de
  * modificar a lógica para lidar com os índices.
  */
-void heap_select(Vector *v, int k, cmp_fn cmp_fn) {
-    int n = vector_size(v) - 1; // Assumindo 1-indexado
+void heap_select(Heap *pq, int k) {
+    int n = vector_size(pq->v) - 1; // Assumindo 1-indexado
 
     if (k < 1 || k > n) {
         // k deve ser um valor válido
@@ -160,8 +139,8 @@ void heap_select(Vector *v, int k, cmp_fn cmp_fn) {
     // 1. Constrói o heap (heapify)
     // Começa da metade do vetor e vai subindo, garantindo que todos os sub-árvores
     // sejam heaps.
-    for (int i = n / 2; i >= 1; i--) {
-        _fix_down(v, n, i, cmp_fn);
+    for (int i = 1; i <= n; i++) {
+        PQ_fix_up(pq, i);
     }
 
     // 2. Extrai os k menores elementos
@@ -169,9 +148,11 @@ void heap_select(Vector *v, int k, cmp_fn cmp_fn) {
     // Trocamos com o último elemento, diminuímos o tamanho considerado do heap
     // e corrigimos a propriedade do heap a partir da raiz.
     int size = n;
+
     for (int j = 0; j < k; j++) {
-        vector_swap(v, 1, size);
-        _fix_down(v, --size, 1, cmp_fn);
+        vector_swap(pq->v, 1, size);
+
+        PQ_fix_down(pq, --size, 1);
     }
 
     // 3. Move os k menores elementos para o início do vetor
@@ -179,6 +160,6 @@ void heap_select(Vector *v, int k, cmp_fn cmp_fn) {
     // do vetor, mas em ordem decrescente.
     // Esta parte move eles para o início do vetor.
     for (int z = 0; z < k; z++) {
-        vector_swap(v, z + 1, n - z);
+        vector_swap(pq->v, z + 1, n - z);
     }
 }

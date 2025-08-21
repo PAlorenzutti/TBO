@@ -45,7 +45,7 @@ void PQ_print(Heap *pq, data_print print_fn);
  * Usa o heap para ordenar parcialmente o vetor v, colocando os k menores
  * elementos nas k primeiras posições.
  */
-void heap_select(Vector *v, int k, cmp_fn cmp_fn);
+void heap_select(Heap *pq, int k);
 
 
 #endif
