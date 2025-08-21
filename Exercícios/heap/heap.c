@@ -73,21 +73,15 @@ void* PQ_delmin(Heap *pq) {
         return NULL;
     }
 
-    // Guarda o mínimo (raiz)
-    void *min = vector_get(pq->v, 1);
-
     // Índice do último elemento válido (desconsiderando o dummy)
-    int last_idx = vector_size(pq->v) - 1;
-
     // Coloca o último elemento na raiz
-    vector_swap(pq->v, 1, last_idx);
+    vector_swap(pq->v, 1, vector_size(pq->v) - 1);
 
     // Remove o antigo último elemento (que era o mínimo)
-    (void)vector_pop_back(pq->v);
+    data_type min = vector_pop_back(pq->v);
 
     // Restaura a propriedade de heap a partir da raiz com o novo tamanho
-    int new_size = vector_size(pq->v) - 1; // tamanho do heap (sem o dummy)
-    PQ_fix_down(pq, new_size, 1);
+    PQ_fix_down(pq, vector_size(pq->v) - 1, 1);
 
     return min;
 }
